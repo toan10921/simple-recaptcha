@@ -18,19 +18,25 @@ class RecaptchaV3Controller
         // enque to admin login page
         add_action('login_enqueue_scripts', [$this, 'enqueue_recaptcha_script']);
 
-        add_action('register_form', [$this, 'add_recaptcha_to_register_form_wp']);
+        add_action('register_form', [$this, 'add_recaptcha_to_form_wp']);
         add_action('register_post', [$this, 'verify_recaptcha_register_form_wp'], 10, 3);
 
         // add action to login form admin wp
 
-        add_action('login_form', [$this, 'add_recaptcha_to_register_form_wp']);
+        add_action('login_form', [$this, 'add_recaptcha_to_form_wp']);
         add_filter('wp_authenticate', [$this, 'verify_recaptcha_login_form_wp'], 10, 1);
 
+        // add action to register form woocommerce
 
         if ($this->is_woocommerce_exists()) {
             add_action('woocommerce_register_form', [$this, 'add_recaptcha_to_register_form_woocommerce']);
             add_action('woocommerce_register_post', [$this, 'add_recaptcha_to_register_form_woocommerce'], 10, 3);
         }
+
+        // add action to comment form
+
+        add_action('comment_form', [$this, 'add_recaptcha_to_form_wp']);
+        add_action('pre_comment_on_post', [$this, 'verify_recaptcha_comment_form_wp']);
     }
 
     public function enqueue_recaptcha_script()
@@ -103,7 +109,7 @@ class RecaptchaV3Controller
         }
     }
 
-    public function add_recaptcha_to_register_form_wp()
+    public function add_recaptcha_to_form_wp()
     {
     ?>
 
@@ -174,6 +180,35 @@ class RecaptchaV3Controller
                 wp_die(
                     __('The reCAPTCHA verification failed. Please try again.', 'text-domain'),
                     __('Login Error', 'text-domain'),
+                    ['back_link' => true]
+                );
+            }
+        }
+    }
+
+    public function verify_recaptcha_comment_form_wp($comment_post_ID)
+    {
+        if (empty($_POST['g-recaptcha-response'])) {
+            wp_die(
+                __('Please verify that you are not a robot.', 'simple-recaptcha'),
+                __('Comment Error', 'simple-recaptcha'),
+                ['back_link' => true]
+            );
+        } else {
+            $response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', array(
+                'body' => array(
+                    'secret' => $this->get_secret_key(),
+                    'response' => $_POST['g-recaptcha-response']
+                )
+            ));
+
+            $response_body = wp_remote_retrieve_body($response);
+            $result = json_decode($response_body, true);
+
+            if (!$result['success']) {
+                wp_die(
+                    __('Captcha verification failed.', 'simple-recaptcha'),
+                    __('Comment Error', 'simple-recaptcha'),
                     ['back_link' => true]
                 );
             }

@@ -1,8 +1,6 @@
 <?php
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
-}
-class RecaptchaV3Controller
+
+class ReCaptchaV2Controller
 {
     private static $instance = null;
 
@@ -33,17 +31,19 @@ class RecaptchaV3Controller
             add_action('woocommerce_register_post', [$this, 'add_recaptcha_to_register_form_woocommerce'], 10, 3);
         }
 
-        // add action to comment form & review form
+        // add action to comment form
 
         add_action('comment_form', [$this, 'add_recaptcha_to_form_wp']);
-        add_filter('woocommerce_product_review_comment_form_args', [$this, 'add_recaptcha_to_woocomerce_product_review_comment_form']);
-
         add_action('pre_comment_on_post', [$this, 'verify_recaptcha_comment_form_wp']);
+
+        add_filter('woocommerce_product_review_comment_form_args', [$this, 'add_recaptcha_to_woocomerce_product_review_comment_form']);
+        add_action('wp_insert_comment', [$this, 'verify_recaptcha_review_form_wp'], 10 , 1);
     }
 
     public function enqueue_recaptcha_script()
     {
-        wp_enqueue_script('recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . $this->get_client_id(), [], null, false);
+        // wp_enqueue_script('recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . $this->get_client_id(), [], null, false);
+        wp_enqueue_script('recaptcha', 'https://www.google.com/recaptcha/api.js', [], null, false);
         wp_enqueue_script('simple-recaptcha-script', plugin_dir_url(__DIR__) . 'assets/js/script.js', ['recaptcha'], null, true);
         // add global variable for recaptcha
         wp_localize_script('simple-recaptcha-script', 'simple_recaptcha', [
@@ -71,7 +71,7 @@ class RecaptchaV3Controller
     public static function getInstance()
     {
         if (self::$instance == null) {
-            self::$instance = new RecaptchaV3Controller();
+            self::$instance = new RecaptchaV2Controller();
         }
         return self::$instance;
     }
@@ -79,8 +79,9 @@ class RecaptchaV3Controller
     public function add_recaptcha_to_register_form_woocommerce()
     {
 ?>
-        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
-
+        <!-- <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response"> -->
+        <div class="g-recaptcha" data-sitekey="your_site_key"></div>
+       
     <?php
     }
 
@@ -109,8 +110,9 @@ class RecaptchaV3Controller
     {
     ?>
 
-        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
-
+        <!-- <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response"> -->
+        <div class="g-recaptcha" data-sitekey="your_site_key"></div>
+     
 <?php
     }
 
@@ -206,13 +208,43 @@ class RecaptchaV3Controller
     public function add_recaptcha_to_woocomerce_product_review_comment_form($comment_form)
     {
 
-        $comment_form['fields']['g-recaptcha-response'] = '<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">';
+        $comment_form['fields']['g-recaptcha-response'] = '<div class="g-recaptcha" data-sitekey="your_site_key"></div>';
         return $comment_form;
     }
+
+    public function verify_recaptcha_review_form_wp($comment_id, $comment_data){
+        if($comment_data['comment_type']  == 'review'){
+            if (empty($_POST['g-recaptcha-response'])) {
+                wp_die(
+                    __('Please verify that you are not a robot.', 'simple-recaptcha'),
+                    __('Comment Error', 'simple-recaptcha'),
+                    ['back_link' => true]
+                );
+            } else {
+                $response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', array(
+                    'body' => array(
+                        'secret' => $this->get_secret_key(),
+                        'response' => $_POST['g-recaptcha-response']
+                    )
+                ));
     
+                $response_body = wp_remote_retrieve_body($response);
+                $result = json_decode($response_body, true);
+    
+                if (!$result['success']) {
+                    wp_die(
+                        __('Captcha verification failed.', 'simple-recaptcha'),
+                        __('Comment Error', 'simple-recaptcha'),
+                        ['back_link' => true]
+                    );
+                }
+            }
+        }
+    }
 }
+
 // check if option is v3, if yes, use RecaptchaV3Controller
 $recaptcha_version = get_option('simple_recaptcha_version');
-if ($recaptcha_version === 'v3') {
-    RecaptchaV3Controller::getInstance();
+if ($recaptcha_version === 'v2') {
+    ReCaptchaV2Controller::getInstance();
 }

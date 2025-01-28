@@ -14,3 +14,4 @@
 
 require_once plugin_dir_path(__FILE__) . 'controllers/admin-options.php';
 require_once plugin_dir_path(__FILE__) . 'controllers/recaptcha-v3-controller.php';
+require_once plugin_dir_path(__FILE__) . 'controllers/recaptcha-v2-controller.php';

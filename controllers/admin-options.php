@@ -23,6 +23,7 @@ class SimpleRecaptchaAdminOptions {
         register_setting('simple_recaptcha_options', 'simple_recaptcha_secret_key');
         register_setting('simple_recaptcha_options', 'simple_recaptcha_client_key');
         register_setting('simple_recaptcha_options', 'simple_recaptcha_version'); // Register new setting
+        register_setting('simple_recaptcha_options', 'simple_recaptcha_hide_badge'); // Register new setting
     }
 
     public function options_page() {
@@ -50,6 +51,15 @@ class SimpleRecaptchaAdminOptions {
                                 <option value="v3" <?php selected(get_option('simple_recaptcha_version'), 'v3'); ?>><?php _e('v3', 'simple-recaptcha'); ?></option>
                                 <option value="v2" <?php selected(get_option('simple_recaptcha_version'), 'v2'); ?>><?php _e('v2', 'simple-recaptcha'); ?></option>
                             </select>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th scope="row"><?php _e('Hide recaptcha badge', 'simple-recaptcha'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="simple_recaptcha_hide_badge" value="1" <?php checked(get_option('simple_recaptcha_hide_badge'), 1); ?> />
+                                <?php _e('Hide recaptcha badge', 'simple-recaptcha'); ?>
+                            </label>
                         </td>
                     </tr>
                 </table>

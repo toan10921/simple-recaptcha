@@ -6,11 +6,14 @@ class ReCaptchaV2Controller
 
     private $client_id = '';
     private $secret_key = '';
+    private $hide_badge = '';
 
     private function __construct()
     {
         $this->client_id = get_option('simple_recaptcha_client_key');
         $this->secret_key = get_option('simple_recaptcha_secret_key');
+        $this->hide_badge = get_option('simple_recaptcha_hide_badge');
+
         // enqueue script
         add_action('wp_enqueue_scripts', [$this, 'enqueue_recaptcha_script']);
         // enque to admin login page
@@ -37,7 +40,16 @@ class ReCaptchaV2Controller
         add_action('pre_comment_on_post', [$this, 'verify_recaptcha_comment_form_wp']);
 
         add_filter('woocommerce_product_review_comment_form_args', [$this, 'add_recaptcha_to_woocomerce_product_review_comment_form']);
-        add_action('wp_insert_comment', [$this, 'verify_recaptcha_review_form_wp'], 10 , 1);
+        add_action('wp_insert_comment', [$this, 'verify_recaptcha_review_form_wp'], 10, 1);
+
+        add_action('wp_head', [$this, 'hide_recaptcha_badge']);
+    }
+
+    public function hide_recaptcha_badge()
+    {
+        if ($this->hide_badge == '1') {
+            echo '<style>.grecaptcha-badge{display:none;}</style>';
+        }
     }
 
     public function enqueue_recaptcha_script()
@@ -81,7 +93,7 @@ class ReCaptchaV2Controller
 ?>
         <!-- <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response"> -->
         <div class="g-recaptcha" data-sitekey="your_site_key"></div>
-       
+
     <?php
     }
 
@@ -112,7 +124,7 @@ class ReCaptchaV2Controller
 
         <!-- <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response"> -->
         <div class="g-recaptcha" data-sitekey="your_site_key"></div>
-     
+
 <?php
     }
 
@@ -212,8 +224,9 @@ class ReCaptchaV2Controller
         return $comment_form;
     }
 
-    public function verify_recaptcha_review_form_wp($comment_id, $comment_data){
-        if($comment_data['comment_type']  == 'review'){
+    public function verify_recaptcha_review_form_wp($comment_id, $comment_data)
+    {
+        if ($comment_data['comment_type']  == 'review') {
             if (empty($_POST['g-recaptcha-response'])) {
                 wp_die(
                     __('Please verify that you are not a robot.', 'simple-recaptcha'),
@@ -227,10 +240,10 @@ class ReCaptchaV2Controller
                         'response' => $_POST['g-recaptcha-response']
                     )
                 ));
-    
+
                 $response_body = wp_remote_retrieve_body($response);
                 $result = json_decode($response_body, true);
-    
+
                 if (!$result['success']) {
                     wp_die(
                         __('Captcha verification failed.', 'simple-recaptcha'),

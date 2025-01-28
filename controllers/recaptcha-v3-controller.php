@@ -8,11 +8,13 @@ class RecaptchaV3Controller
 
     private $client_id = '';
     private $secret_key = '';
+    private $hide_badge = '';
 
     private function __construct()
     {
         $this->client_id = get_option('simple_recaptcha_client_key');
         $this->secret_key = get_option('simple_recaptcha_secret_key');
+        $this->hide_badge = get_option('simple_recaptcha_hide_badge');
         // enqueue script
         add_action('wp_enqueue_scripts', [$this, 'enqueue_recaptcha_script']);
         // enque to admin login page
@@ -39,6 +41,15 @@ class RecaptchaV3Controller
         add_filter('woocommerce_product_review_comment_form_args', [$this, 'add_recaptcha_to_woocomerce_product_review_comment_form']);
 
         add_action('pre_comment_on_post', [$this, 'verify_recaptcha_comment_form_wp']);
+        
+        add_action('wp_head', [$this, 'hide_recaptcha_badge']);
+    }
+
+    public function hide_recaptcha_badge()
+    {
+        if ($this->hide_badge == '1') {
+            echo '<style>.grecaptcha-badge{display:none;}</style>';
+        }
     }
 
     public function enqueue_recaptcha_script()
@@ -209,7 +220,7 @@ class RecaptchaV3Controller
         $comment_form['fields']['g-recaptcha-response'] = '<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">';
         return $comment_form;
     }
-    
+
 }
 // check if option is v3, if yes, use RecaptchaV3Controller
 $recaptcha_version = get_option('simple_recaptcha_version');

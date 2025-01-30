@@ -5,9 +5,6 @@ if (!defined('ABSPATH')) {
 
 class SimpleRecaptchaAdminOptions
 {
-    private $home_url = "https://id.trienkhaiweb.com/";
-    private $endpoint = "https://id.trienkhaiweb.com/api/v1/banners";
-
     public function __construct()
     {
         add_action('admin_menu', array($this, 'add_admin_menu'));
@@ -21,8 +18,6 @@ class SimpleRecaptchaAdminOptions
         // add filter to add settings link on plugin page
         add_filter('plugin_action_links_simple-recaptcha/simple-recaptcha.php', [$this, '_add_settings_link']);
 
-        add_action('wp_ajax_handleAjaxBanner', [$this, 'handleAjaxBanner']);
-        add_action('wp_ajax_nopriv_handleAjaxBanner', [$this, 'handleAjaxBanner']);
     }
 
     public function _add_settings_link($links) {
@@ -63,21 +58,8 @@ class SimpleRecaptchaAdminOptions
         wp_localize_script('simple-recaptcha-admin-script', 'simple_recaptcha', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'action' => 'handleAjaxBanner',
-            'banner_folder_url' =>  $this->home_url . 'user-uploads/banners/'
+            
         ]);
-    }
-
-    public function handleAjaxBanner()
-    {
-        // handle ajax request here
-        // call api to get banner
-        $response = wp_remote_get($this->endpoint);
-        if (is_wp_error($response)) {
-            wp_send_json_error($response->get_error_message());
-        }
-        $body = wp_remote_retrieve_body($response);
-        $data = json_decode($body);
-        wp_send_json_success($data);
     }
 
     public function options_page()

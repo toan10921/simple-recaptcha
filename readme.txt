@@ -31,8 +31,6 @@ Upload Method:
 1. Unzip the plugin and upload the "simple-recaptcha" folder to your 'wp-content/plugins' directory
 2. Activate the plugin through the Plugins menu in WordPress
 
-== Frequently Asked Questions ==
-
 = Using Simple reCAPTCHA =
 
 1. Once activated, Simple reCAPTCHA will add a page under the "Settings" menu in your WordPress admin.
@@ -41,6 +39,12 @@ Upload Method:
 4. Fill in your `client_key` and `secret_key` that you received from the Google Dashboard.
 5. Choose the correct version (v2 or v3).
 6. Click "Save" to apply all your settings.
+
+== Frequently Asked Questions ==
+
+== Want to contribute? ==
+
+Feel free to open an issue or submit a pull request on [GitHub](https://github.com/toan10921/simple-recaptcha).
 
 = Is my host supported? =
 

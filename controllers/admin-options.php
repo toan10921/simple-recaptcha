@@ -36,6 +36,11 @@ class SimpleRecaptchaAdminOptions
 
     public function register_settings()
     {
+        register_setting('simple_recaptcha_options', 'simple_recaptcha_enable_feature', array(
+            'type' => 'string',
+            'default' => '1',
+            'sanitize_callback' => 'sanitize_text_field'
+        ));
         register_setting('simple_recaptcha_options', 'simple_recaptcha_secret_key');
         register_setting('simple_recaptcha_options', 'simple_recaptcha_client_key');
         register_setting('simple_recaptcha_options', 'simple_recaptcha_version'); // Register new setting
@@ -49,11 +54,12 @@ class SimpleRecaptchaAdminOptions
         wp_localize_script('simple-recaptcha-admin-script', 'simple_recaptcha', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'action' => 'handleAjaxBanner',
-            'banner_folder_url' =>  $this->home_url.'user-uploads/banners/'
+            'banner_folder_url' =>  $this->home_url . 'user-uploads/banners/'
         ]);
     }
 
-    public function handleAjaxBanner(){
+    public function handleAjaxBanner()
+    {
         // handle ajax request here
         // call api to get banner
         $response = wp_remote_get($this->endpoint);
@@ -81,12 +87,21 @@ class SimpleRecaptchaAdminOptions
                         <div class="table-wrap">
                             <table class="form-table">
                                 <tr valign="top">
-                                    <th scope="row"><?php _e('Secret Key', 'simple-recaptcha'); ?></th>
-                                    <td><input type="text" name="simple_recaptcha_secret_key" value="<?php echo esc_attr(get_option('simple_recaptcha_secret_key')); ?>" /></td>
+                                    <th scope="row"><?php _e('Enable Recaptcha Feature', 'simple-recaptcha'); ?></th>
+                                    <td>
+                                        <label>
+                                            <input type="checkbox" name="simple_recaptcha_enable_feature" value="1" <?php echo (esc_attr(get_option('simple_recaptcha_enable_feature')) == '1') ? 'checked' : '' ?> />
+                                            <?php _e('Enable Recaptcha Feature', 'simple-recaptcha'); ?>
+                                        </label>
+                                    </td>
                                 </tr>
                                 <tr valign="top">
                                     <th scope="row"><?php _e('Client Key', 'simple-recaptcha'); ?></th>
                                     <td><input type="text" name="simple_recaptcha_client_key" value="<?php echo esc_attr(get_option('simple_recaptcha_client_key')); ?>" /></td>
+                                </tr>
+                                <tr valign="top">
+                                    <th scope="row"><?php _e('Secret Key', 'simple-recaptcha'); ?></th>
+                                    <td><input type="text" name="simple_recaptcha_secret_key" value="<?php echo esc_attr(get_option('simple_recaptcha_secret_key')); ?>" /></td>
                                 </tr>
                                 <tr valign="top">
                                     <th scope="row"><?php _e('Recaptcha Version', 'simple-recaptcha'); ?></th>
@@ -111,7 +126,7 @@ class SimpleRecaptchaAdminOptions
                         </div>
                         <div class="banner-wrap">
                             <div class="plugin-advertising-banner">
-                              
+
                             </div>
                         </div>
                     </div>

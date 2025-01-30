@@ -38,9 +38,7 @@ class RecaptchaV3Controller
         // add action to comment form & review form
 
         add_action('comment_form', [$this, 'add_recaptcha_to_form_wp']);
-        // dont need this action, action comment_form is enough
-        // add_filter('woocommerce_product_review_comment_form_args', [$this, 'add_recaptcha_to_woocomerce_product_review_comment_form']);
-
+      
         add_action('pre_comment_on_post', [$this, 'verify_recaptcha_comment_form_wp']);
         
         add_action('wp_head', [$this, 'hide_recaptcha_badge']);
@@ -150,31 +148,39 @@ class RecaptchaV3Controller
     public function verify_recaptcha_login_form_wp($username)
     {
 
-        if (isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])) {
-            $response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', [
-                'body' => [
-                    'secret'   => $this->get_secret_key(), // Replace with your reCAPTCHA secret key
-                    'response' => sanitize_text_field($_POST['g-recaptcha-response']),
-                    'remoteip' => $_SERVER['REMOTE_ADDR'], // Optional
-                ],
-            ]);
-
-            if (is_wp_error($response)) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (empty($_POST['g-recaptcha-response'])) {
                 wp_die(
-                    __('Unable to verify the reCAPTCHA. Please try again.', 'text-domain'),
-                    __('Login Error', 'text-domain'),
+                    __('Please verify that you are not a robot.', 'simple-recaptcha'),
+                    __('Login Error', 'simple-recaptcha'),
                     ['back_link' => true]
                 );
-            }
-
-            $response_body = json_decode(wp_remote_retrieve_body($response), true);
-
-            if (empty($response_body['success']) || !$response_body['success']) {
-                wp_die(
-                    __('The reCAPTCHA verification failed. Please try again.', 'text-domain'),
-                    __('Login Error', 'text-domain'),
-                    ['back_link' => true]
-                );
+            } else {
+                $response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', [
+                    'body' => [
+                        'secret'   => $this->get_secret_key(),
+                        'response' => sanitize_text_field($_POST['g-recaptcha-response']),
+                        'remoteip' => $_SERVER['REMOTE_ADDR'],
+                    ],
+                ]);
+    
+                if (is_wp_error($response)) {
+                    wp_die(
+                        __('Unable to verify the reCAPTCHA. Please try again.', 'text-domain'),
+                        __('Login Error', 'text-domain'),
+                        ['back_link' => true]
+                    );
+                }
+    
+                $response_body = json_decode(wp_remote_retrieve_body($response), true);
+    
+                if (empty($response_body['success']) || !$response_body['success']) {
+                    wp_die(
+                        __('The reCAPTCHA verification failed. Please try again.', 'text-domain'),
+                        __('Login Error', 'text-domain'),
+                        ['back_link' => true]
+                    );
+                }
             }
         }
     }
@@ -208,23 +214,10 @@ class RecaptchaV3Controller
         }
     }
 
-    /**
-     * Function for `woocommerce_product_review_comment_form_args` filter-hook. Deprecated, remove later
-     * 
-     * @param  $comment_form 
-     *
-     * @return 
-     */
-    public function add_recaptcha_to_woocomerce_product_review_comment_form($comment_form)
-    {
-
-        $comment_form['fields']['g-recaptcha-response'] = '<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">';
-        return $comment_form;
-    }
-
 }
 // check if option is v3, if yes, use RecaptchaV3Controller
+$enable_recaptcha = get_option('simple_recaptcha_enable_feature');
 $recaptcha_version = get_option('simple_recaptcha_version');
-if ($recaptcha_version === 'v3') {
+if ($enable_recaptcha == '1' && $recaptcha_version === 'v3') {
     RecaptchaV3Controller::getInstance();
 }

@@ -89,8 +89,7 @@ class ReCaptchaV2Controller
     public function add_recaptcha_to_register_form_woocommerce()
     {
 ?>
-        <div class="g-recaptcha" data-sitekey="<?php echo $this->get_client_id(); ?>"></div>
-
+        <div class="g-recaptcha" data-sitekey="<?php echo esc_attr( $this->get_client_id() ); ?>"></div>
     <?php
     }
 
@@ -118,7 +117,7 @@ class ReCaptchaV2Controller
     public function add_recaptcha_to_form_wp()
     {
     ?>
-        <div class="g-recaptcha" data-sitekey="<?php echo $this->get_client_id(); ?>"></div>
+        <div class="g-recaptcha" data-sitekey="<?php echo esc_attr($this->get_client_id()); ?>"></div>
 
 <?php
     }
@@ -149,8 +148,8 @@ class ReCaptchaV2Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (empty($_POST['g-recaptcha-response'])) {
                 wp_die(
-                    __('Please verify that you are not a robot.', 'simple-recaptcha'),
-                    __('Login Error', 'simple-recaptcha'),
+                    esc_html__('Please verify that you are not a robot.', 'simple-recaptcha'),
+                    esc_html__('Login Error', 'simple-recaptcha'),
                     ['back_link' => true]
                 );
             } else {
@@ -164,8 +163,8 @@ class ReCaptchaV2Controller
     
                 if (is_wp_error($response)) {
                     wp_die(
-                        __('Unable to verify the reCAPTCHA. Please try again.', 'text-domain'),
-                        __('Login Error', 'text-domain'),
+                        esc_html__('Unable to verify the reCAPTCHA. Please try again.', 'simple-recaptcha'),
+                        esc_html__('Login Error', 'simple-recaptcha'),
                         ['back_link' => true]
                     );
                 }
@@ -174,8 +173,8 @@ class ReCaptchaV2Controller
     
                 if (empty($response_body['success']) || !$response_body['success']) {
                     wp_die(
-                        __('The reCAPTCHA verification failed. Please try again.', 'text-domain'),
-                        __('Login Error', 'text-domain'),
+                        esc_html__('The reCAPTCHA verification failed. Please try again.', 'simple-recaptcha'),
+                        esc_html__('Login Error', 'simple-recaptcha'),
                         ['back_link' => true]
                     );
                 }
@@ -187,8 +186,8 @@ class ReCaptchaV2Controller
     {
         if (empty($_POST['g-recaptcha-response'])) {
             wp_die(
-                __('Please verify that you are not a robot.', 'simple-recaptcha'),
-                __('Comment Error', 'simple-recaptcha'),
+                esc_html__('Please verify that you are not a robot.', 'simple-recaptcha'),
+                esc_html__('Comment Error', 'simple-recaptcha'),
                 ['back_link' => true]
             );
         } else {
@@ -204,8 +203,8 @@ class ReCaptchaV2Controller
 
             if (!$result['success']) {
                 wp_die(
-                    __('Captcha verification failed.', 'simple-recaptcha'),
-                    __('Comment Error', 'simple-recaptcha'),
+                    esc_html__('Captcha verification failed.', 'simple-recaptcha'),
+                    esc_html__('Comment Error', 'simple-recaptcha'),
                     ['back_link' => true]
                 );
             }

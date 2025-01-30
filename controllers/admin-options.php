@@ -45,10 +45,26 @@ class SimpleRecaptchaAdminOptions
             'default' => '1',
             'sanitize_callback' => 'sanitize_text_field'
         ));
-        register_setting('simple_recaptcha_options', 'simple_recaptcha_secret_key');
-        register_setting('simple_recaptcha_options', 'simple_recaptcha_client_key');
-        register_setting('simple_recaptcha_options', 'simple_recaptcha_version'); // Register new setting
-        register_setting('simple_recaptcha_options', 'simple_recaptcha_hide_badge'); // Register new setting
+        register_setting('simple_recaptcha_options', 'simple_recaptcha_secret_key', array(
+            'type' => 'string',
+            'default' => '',
+            'sanitize_callback' => 'sanitize_text_field'
+        ));
+        register_setting('simple_recaptcha_options', 'simple_recaptcha_client_key', array(
+            'type' => 'string',
+            'default' => '',
+            'sanitize_callback' => 'sanitize_text_field'
+        ));
+        register_setting('simple_recaptcha_options', 'simple_recaptcha_version', array(
+            'type' => 'string',
+            'default' => 'v3',
+            'sanitize_callback' => 'sanitize_text_field'
+        )); // Register new setting
+        register_setting('simple_recaptcha_options', 'simple_recaptcha_hide_badge', array(
+            'type' => 'string',
+            'default' => '0',
+            'sanitize_callback' => 'sanitize_text_field'
+        )); // Register new setting
     }
 
     public function add_scripts_option_page()
@@ -68,48 +84,48 @@ class SimpleRecaptchaAdminOptions
         <div class="options-outer">
             <div class="wrap">
 
-                <h1><?php _e('Simple Recaptcha Options', 'simple-recaptcha'); ?></h1>
+                <h1><?php esc_html_e('Simple Recaptcha Options', 'simple-recaptcha'); ?></h1>
                 <form method="post" action="options.php">
                     <?php
                     settings_fields('simple_recaptcha_options');
                     do_settings_sections('simple_recaptcha_options');
                     ?>
-                    <p class="desc"><?php echo __('Go to <a href="https://www.google.com/recaptcha/admin" target="_blank">https://www.google.com/recaptcha/admin</a> to register your client key and secret key for your domain', 'simple-recaptcha') ?></p>
+                    <p class="desc"><?php echo esc_html__('Go to <a href="https://www.google.com/recaptcha/admin" target="_blank">https://www.google.com/recaptcha/admin</a> to register your client key and secret key for your domain', 'simple-recaptcha') ?></p>
                     <div class="options-wrap">
                         <div class="table-wrap">
                             <table class="form-table">
                                 <tr valign="top">
-                                    <th scope="row"><?php _e('Enable Recaptcha Feature', 'simple-recaptcha'); ?></th>
+                                    <th scope="row"><?php esc_html_e('Enable Recaptcha Feature', 'simple-recaptcha'); ?></th>
                                     <td>
                                         <label>
                                             <input type="checkbox" name="simple_recaptcha_enable_feature" value="1" <?php echo (esc_attr(get_option('simple_recaptcha_enable_feature')) == '1') ? 'checked' : '' ?> />
-                                            <?php _e('Enable Recaptcha Feature', 'simple-recaptcha'); ?>
+                                            <?php esc_html_e('Enable Recaptcha Feature', 'simple-recaptcha'); ?>
                                         </label>
                                     </td>
                                 </tr>
                                 <tr valign="top">
-                                    <th scope="row"><?php _e('Client Key', 'simple-recaptcha'); ?></th>
+                                    <th scope="row"><?php esc_html_e('Client Key', 'simple-recaptcha'); ?></th>
                                     <td><input type="text" name="simple_recaptcha_client_key" value="<?php echo esc_attr(get_option('simple_recaptcha_client_key')); ?>" /></td>
                                 </tr>
                                 <tr valign="top">
-                                    <th scope="row"><?php _e('Secret Key', 'simple-recaptcha'); ?></th>
+                                    <th scope="row"><?php esc_html_e('Secret Key', 'simple-recaptcha'); ?></th>
                                     <td><input type="text" name="simple_recaptcha_secret_key" value="<?php echo esc_attr(get_option('simple_recaptcha_secret_key')); ?>" /></td>
                                 </tr>
                                 <tr valign="top">
-                                    <th scope="row"><?php _e('Recaptcha Version', 'simple-recaptcha'); ?></th>
+                                    <th scope="row"><?php esc_html_e('Recaptcha Version', 'simple-recaptcha'); ?></th>
                                     <td>
                                         <select name="simple_recaptcha_version">
-                                            <option value="v3" <?php selected(get_option('simple_recaptcha_version'), 'v3'); ?>><?php _e('v3', 'simple-recaptcha'); ?></option>
-                                            <option value="v2" <?php selected(get_option('simple_recaptcha_version'), 'v2'); ?>><?php _e('v2', 'simple-recaptcha'); ?></option>
+                                            <option value="v3" <?php selected(get_option('simple_recaptcha_version'), 'v3'); ?>><?php esc_html_e('v3', 'simple-recaptcha'); ?></option>
+                                            <option value="v2" <?php selected(get_option('simple_recaptcha_version'), 'v2'); ?>><?php esc_html_e('v2', 'simple-recaptcha'); ?></option>
                                         </select>
                                     </td>
                                 </tr>
                                 <tr valign="top">
-                                    <th scope="row"><?php _e('Hide recaptcha badge', 'simple-recaptcha'); ?></th>
+                                    <th scope="row"><?php esc_html_e('Hide recaptcha badge', 'simple-recaptcha'); ?></th>
                                     <td>
                                         <label>
                                             <input type="checkbox" name="simple_recaptcha_hide_badge" value="1" <?php checked(get_option('simple_recaptcha_hide_badge'), 1); ?> />
-                                            <?php _e('Hide recaptcha badge', 'simple-recaptcha'); ?>
+                                            <?php esc_html_e('Hide recaptcha badge', 'simple-recaptcha'); ?>
                                         </label>
                                     </td>
                                 </tr>

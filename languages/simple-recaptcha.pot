@@ -1,0 +1,111 @@
+# Copyright (C) 2025 toango92
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Simple reCAPTCHA 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/simple-recaptcha\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-01-30T17:32:15+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.11.0\n"
+"X-Domain: simple-recaptcha\n"
+
+#. Plugin Name of the plugin
+#: simple-recaptcha.php
+msgid "Simple reCAPTCHA"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: simple-recaptcha.php
+msgid "https://trienkhaiweb.com"
+msgstr ""
+
+#. Description of the plugin
+#: simple-recaptcha.php
+msgid "Simple and lightweight reCAPTCHA for WordPress login, registration, and comment form , wocoomerce form."
+msgstr ""
+
+#. Author of the plugin
+#: simple-recaptcha.php
+msgid "toango92"
+msgstr ""
+
+#: controllers/admin-options.php:38
+#: controllers/admin-options.php:89
+msgid "Simple Recaptcha Options"
+msgstr ""
+
+#: controllers/admin-options.php:39
+msgid "Simple Recaptcha"
+msgstr ""
+
+#: controllers/admin-options.php:95
+msgid "Go to <a href=\"https://www.google.com/recaptcha/admin\" target=\"_blank\">https://www.google.com/recaptcha/admin</a> to register your client key and secret key for your domain"
+msgstr ""
+
+#: controllers/admin-options.php:100
+#: controllers/admin-options.php:104
+msgid "Enable Recaptcha Feature"
+msgstr ""
+
+#: controllers/admin-options.php:109
+msgid "Client Key"
+msgstr ""
+
+#: controllers/admin-options.php:113
+msgid "Secret Key"
+msgstr ""
+
+#: controllers/admin-options.php:117
+msgid "Recaptcha Version"
+msgstr ""
+
+#: controllers/admin-options.php:120
+msgid "v3"
+msgstr ""
+
+#: controllers/admin-options.php:121
+msgid "v2"
+msgstr ""
+
+#: controllers/admin-options.php:126
+#: controllers/admin-options.php:130
+msgid "Hide recaptcha badge"
+msgstr ""
+
+#: controllers/recaptcha-v2-controller.php:100
+#: controllers/recaptcha-v2-controller.php:129
+#: controllers/recaptcha-v2-controller.php:152
+#: controllers/recaptcha-v2-controller.php:190
+#: controllers/recaptcha-v3-controller.php:100
+#: controllers/recaptcha-v3-controller.php:130
+#: controllers/recaptcha-v3-controller.php:154
+#: controllers/recaptcha-v3-controller.php:192
+msgid "Please verify that you are not a robot."
+msgstr ""
+
+#: controllers/recaptcha-v2-controller.php:113
+#: controllers/recaptcha-v2-controller.php:142
+#: controllers/recaptcha-v2-controller.php:207
+#: controllers/recaptcha-v3-controller.php:113
+#: controllers/recaptcha-v3-controller.php:143
+#: controllers/recaptcha-v3-controller.php:209
+msgid "Captcha verification failed."
+msgstr ""
+
+#: controllers/recaptcha-v2-controller.php:153
+#: controllers/recaptcha-v3-controller.php:155
+msgid "Login Error"
+msgstr ""
+
+#: controllers/recaptcha-v2-controller.php:191
+#: controllers/recaptcha-v2-controller.php:208
+#: controllers/recaptcha-v3-controller.php:193
+#: controllers/recaptcha-v3-controller.php:210
+msgid "Comment Error"
+msgstr ""

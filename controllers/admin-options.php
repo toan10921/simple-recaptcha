@@ -18,10 +18,19 @@ class SimpleRecaptchaAdminOptions
                 $this->add_scripts_option_page();
             }
         });
+        // add filter to add settings link on plugin page
+        add_filter('plugin_action_links_simple-recaptcha/simple-recaptcha.php', [$this, '_add_settings_link']);
 
         add_action('wp_ajax_handleAjaxBanner', [$this, 'handleAjaxBanner']);
         add_action('wp_ajax_nopriv_handleAjaxBanner', [$this, 'handleAjaxBanner']);
     }
+
+    public function _add_settings_link($links) {
+        $settings_link = '<a href="options-general.php?page=simple-recaptcha">Settings</a>';
+        array_push($links, $settings_link);
+        return $links;
+    }
+   
 
     public function add_admin_menu()
     {
@@ -83,6 +92,7 @@ class SimpleRecaptchaAdminOptions
                     settings_fields('simple_recaptcha_options');
                     do_settings_sections('simple_recaptcha_options');
                     ?>
+                    <p class="desc"><?php echo __('Go to <a href="https://www.google.com/recaptcha/admin" target="_blank">https://www.google.com/recaptcha/admin</a> to register your client key and secret key for your domain', 'simple-recaptcha') ?></p>
                     <div class="options-wrap">
                         <div class="table-wrap">
                             <table class="form-table">

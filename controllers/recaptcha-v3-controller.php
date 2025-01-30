@@ -38,7 +38,8 @@ class RecaptchaV3Controller
         // add action to comment form & review form
 
         add_action('comment_form', [$this, 'add_recaptcha_to_form_wp']);
-        add_filter('woocommerce_product_review_comment_form_args', [$this, 'add_recaptcha_to_woocomerce_product_review_comment_form']);
+        // dont need this action, action comment_form is enough
+        // add_filter('woocommerce_product_review_comment_form_args', [$this, 'add_recaptcha_to_woocomerce_product_review_comment_form']);
 
         add_action('pre_comment_on_post', [$this, 'verify_recaptcha_comment_form_wp']);
         
@@ -208,7 +209,7 @@ class RecaptchaV3Controller
     }
 
     /**
-     * Function for `woocommerce_product_review_comment_form_args` filter-hook.
+     * Function for `woocommerce_product_review_comment_form_args` filter-hook. Deprecated, remove later
      * 
      * @param  $comment_form 
      *
